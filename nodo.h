@@ -18,4 +18,6 @@ void insertar(nodo **, char *);
 void eliminar(nodo **, char *);
 bool buscar(nodo **, char *);
 void imprimir(nodo **);
+void guardarenArchivo(nodo **);
+void leerdeArchivo(nodo **);
 #endif

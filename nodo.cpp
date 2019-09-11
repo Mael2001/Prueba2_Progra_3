@@ -1,17 +1,21 @@
 #include "nodo.h"
 #include <iostream>
 #include <cstring>
+#include <fstream>
+
+using namespace std;
 
 void insertar(nodo **raiz, char *nombre)
 {
     nodo *nuevo = new nodo;
-    nuevo->nombre = nombre;
+    nuevo->nombre = new char[strlen(nombre)];
+    strcpy(nuevo->nombre, nombre);
     if (buscar(raiz, nombre) == 1)
     {
         delete nuevo;
         return;
     }
-    else if (*raiz == 0)
+    if (*raiz == 0)
     {
         *raiz = nuevo;
         return;
@@ -23,9 +27,10 @@ void insertar(nodo **raiz, char *nombre)
         {
             if (actual == (*raiz))
             {
-                actual->siguiente = (*raiz);
-                (*raiz)->anterior = actual;
-                (*raiz) = actual;
+                nuevo->siguiente = (*raiz);
+                (*raiz)->anterior = nuevo;
+                (*raiz) = nuevo;
+                return;
             }
             actual->anterior->siguiente = nuevo;
             nuevo->anterior = actual->anterior;
@@ -98,4 +103,40 @@ bool buscar(nodo **raiz, char *nombre)
         }
     }
     buscar(&(*raiz)->siguiente, nombre);
+}
+void guardarenArchivo(nodo **raiz)
+{
+    string NomArch;
+    cout << "\nIngrese Nombre De Archivo De Texto" << endl;
+    cin >> NomArch;
+
+    ofstream myfile;
+    myfile.open(NomArch);
+    nodo *actual = *raiz;
+    while (actual != 0)
+    {
+        myfile << actual->nombre << " ";
+        actual = actual->siguiente;
+    }
+    myfile.close();
+}
+
+void leerdeArchivo(nodo **raiz)
+{
+    string nombreArch;
+    cout << "Ingrese el nombre del archivo donde esta la Lista Enlazada:\n";
+    cin >> nombreArch;
+    ifstream read(nombreArch.c_str());
+    if (!read.is_open())
+    {
+        cout << "No se pudo abrir el Archivo: " << nombreArch << endl;
+        return;
+    }
+    string line;
+    while (getline(read, line))
+    {
+        char * palabra=&line[0];
+        cout<<palabra;
+        insertar(&*raiz, palabra);
+    }
 }
